@@ -28,10 +28,18 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build with Gradle
-      run: ./gradlew assembleUniversalDebug
+      run: ./gradlew assembleUniversalDebug | tee build.log
 
     - name: Upload APK
+      if: success()
       uses: actions/upload-artifact@v4
       with:
         name: echo-music-debug.apk
         path: app/build/outputs/apk/universal/debug/*.apk
+
+    - name: Upload Build Log on Failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-failure-log
+        path: build.log
