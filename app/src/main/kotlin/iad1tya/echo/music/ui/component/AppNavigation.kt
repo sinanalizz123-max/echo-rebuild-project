@@ -1,6 +1,7 @@
 package iad1tya.echo.music.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,7 +47,7 @@ fun AppNavigationBar(
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .height(72.dp)
     ) {
-        // Blur Background Layer
+        // Blur Background Layer (Frosted Glass)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -55,14 +56,25 @@ fun AppNavigationBar(
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
+                            // Saturated, lower brightness "Water" tint
+                            Color(0xFF003366).copy(alpha = 0.4f), 
+                            Color(0xFF001122).copy(alpha = 0.6f)
                         )
                     )
                 )
+                .border(
+                    width = 1.dp,
+                    brush = Brush.verticalGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.3f),
+                            Color.White.copy(alpha = 0.1f)
+                        )
+                    ),
+                    shape = RoundedCornerShape(36.dp)
+                )
         )
 
-        // Content Layer
+        // Content Layer (Crisp)
         NavigationBar(
             modifier = Modifier
                 .fillMaxSize()
@@ -77,9 +89,9 @@ fun AppNavigationBar(
                     selected = selected,
                     onClick = { onItemClick(screen, selected) },
                     colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                        indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
                         selectedIconColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     ),
                     icon = {
                         Icon(

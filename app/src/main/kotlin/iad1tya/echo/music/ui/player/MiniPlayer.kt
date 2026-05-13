@@ -369,9 +369,26 @@ private fun NewMiniPlayer(
                 .height(64.dp) // Circular height
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp))
-                .blur(20.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-                .then(backgroundModifier)
         ) {
+            // Background Blur Layer (Frosted Glass)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .blur(20.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                    .then(backgroundModifier)
+                    .border(
+                        width = 1.dp,
+                        brush = Brush.verticalGradient(
+                            listOf(
+                                Color.White.copy(alpha = 0.4f),
+                                Color.White.copy(alpha = 0.1f)
+                            )
+                        ),
+                        shape = RoundedCornerShape(32.dp)
+                    )
+            )
+
+            // Content Layer (Crisp)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
