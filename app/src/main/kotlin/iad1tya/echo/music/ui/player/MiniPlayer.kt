@@ -338,39 +338,39 @@ private fun NewMiniPlayer(
             }
     ) {
         // Main MiniPlayer box that moves with swipe
+        val miniPlayerContentModifier = if (isTabletLandscape) {
+            Modifier
+                .width(500.dp)
+                .align(Alignment.CenterEnd) // Right align
+        } else {
+            Modifier
+                .fillMaxWidth(miniPlayerWidthFraction)
+                .widthIn(max = miniPlayerMaxWidth)
+                .align(Alignment.Center)
+        }
+
+        val backgroundModifier = if (pureBlack || pureBlackMiniPlayer) {
+            Modifier.background(Color.Black.copy(alpha = 0.7f))
+        } else if (gradientColors.isNotEmpty()) {
+            Modifier.background(
+                Brush.horizontalGradient(
+                    colors = gradientColors.map { it.copy(alpha = 0.6f) }
+                )
+            )
+        } else {
+            Modifier.background(
+                color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.6f)
+            )
+        }
+
         Box(
             modifier = Modifier
-                .then(
-                    if (isTabletLandscape) {
-                        Modifier
-                            .width(500.dp)
-                            .align(Alignment.CenterEnd) // Right align
-                    } else {
-                        Modifier
-                            .fillMaxWidth(miniPlayerWidthFraction)
-                            .widthIn(max = miniPlayerMaxWidth)
-                            .align(Alignment.Center)
-                    }
-                )
+                .then(miniPlayerContentModifier)
                 .height(64.dp) // Circular height
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(32.dp))
                 .blur(20.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-                .then(
-                    if (pureBlack || pureBlackMiniPlayer) {
-                        Modifier.background(Color.Black.copy(alpha = 0.7f))
-                    } else if (gradientColors.isNotEmpty()) {
-                        Modifier.background(
-                            Brush.horizontalGradient(
-                                colors = gradientColors.map { it.copy(alpha = 0.6f) }
-                            )
-                        )
-                    } else {
-                        Modifier.background(
-                            color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.6f)
-                        )
-                    }
-                )
+                .then(backgroundModifier)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
