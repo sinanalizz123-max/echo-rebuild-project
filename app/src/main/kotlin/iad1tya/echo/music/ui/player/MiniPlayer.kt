@@ -90,6 +90,7 @@ import iad1tya.echo.music.models.MediaMetadata
 import iad1tya.echo.music.utils.rememberPreference
 import iad1tya.echo.music.ui.theme.PlayerColorExtractor
 import iad1tya.echo.music.ui.component.glassmorphic
+import iad1tya.echo.music.ui.component.GlassmorphicContainer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -364,16 +365,14 @@ private fun NewMiniPlayer(
             )
         }
 
-        Box(
+        GlassmorphicContainer(
             modifier = Modifier
                 .then(miniPlayerContentModifier)
                 .height(64.dp) // Circular height
-                .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
-                .glassmorphic(
-                    radius = 20.dp,
-                    shape = RoundedCornerShape(32.dp),
-                    alpha = if (pureBlack || pureBlackMiniPlayer) 0.15f else 0.45f
-                )
+                .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) },
+            radius = 20.dp,
+            shape = RoundedCornerShape(32.dp),
+            alpha = if (pureBlack || pureBlackMiniPlayer) 0.15f else 0.45f
         ) {
             // Content Layer (Crisp)
             Row(

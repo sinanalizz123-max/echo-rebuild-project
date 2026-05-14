@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import iad1tya.echo.music.constants.FloatingCompactMaxWidth
 import iad1tya.echo.music.constants.FloatingCompactWidthFraction
 import iad1tya.echo.music.ui.component.glassmorphic
+import iad1tya.echo.music.ui.component.GlassmorphicContainer
 import iad1tya.echo.music.ui.screens.Screens
 
 @Composable
@@ -51,28 +52,14 @@ fun FloatingNavigationToolbar(
     isSelected: (Screens) -> Boolean,
     onItemClick: (Screens, Boolean) -> Unit,
 ) {
-    Surface(
+    GlassmorphicContainer(
         modifier = modifier
             .fillMaxWidth(FloatingCompactWidthFraction)
-            .widthIn(max = FloatingCompactMaxWidth)
-            .glassmorphic(
-                radius = 24.dp,
-                shape = RoundedCornerShape(28.dp),
-                alpha = if (pureBlack) 0.15f else 0.45f
-            ),
+            .widthIn(max = FloatingCompactMaxWidth),
         shape = RoundedCornerShape(28.dp),
-        color = Color.Transparent,
-        border = BorderStroke(
-            width = 1.dp,
-            color =
-                if (pureBlack) {
-                    Color.White.copy(alpha = 0.18f)
-                } else {
-                    MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)
-                },
-        ),
-        tonalElevation = 0.dp,
-        shadowElevation = 18.dp,
+        radius = 24.dp,
+        alpha = if (pureBlack) 0.15f else 0.45f,
+        borderColor = if (pureBlack) Color.White else MaterialTheme.colorScheme.outline
     ) {
         Row(
             modifier = Modifier

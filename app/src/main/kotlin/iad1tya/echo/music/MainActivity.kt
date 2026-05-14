@@ -206,6 +206,7 @@ import iad1tya.echo.music.ui.component.ImportantNoticeDialog
 import iad1tya.echo.music.ui.component.LocalBottomSheetPageState
 import iad1tya.echo.music.ui.component.LocalMenuState
 import iad1tya.echo.music.ui.component.TopSearch
+import iad1tya.echo.music.ui.component.WaterBackground
 import iad1tya.echo.music.ui.component.rememberBottomSheetState
 import iad1tya.echo.music.ui.component.shimmer.ShimmerTheme
 import iad1tya.echo.music.ui.menu.YouTubeSongMenu
@@ -578,6 +579,9 @@ class MainActivity : ComponentActivity() {
                             .blur(100.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
                             .alpha(if (useDarkTheme) 0.5f else 0.7f)
                     )
+
+                    // Watermorphism Effect (Animated Water Drops)
+                    WaterBackground(isDark = useDarkTheme)
 
                     // Overlay for contrast
                     Box(

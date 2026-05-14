@@ -21,35 +21,29 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /**
- * A modifier that applies a glassmorphism effect (frosted glass).
+ * A modifier that applies a glassmorphism style (transparency + border).
+ * Note: This does NOT apply blur to the content itself to avoid blurring foreground elements.
+ * Use [GlassmorphicContainer] if you need the background blur effect.
  */
 fun Modifier.glassmorphic(
-    radius: Dp = 20.dp,
+    radius: Dp = 20.dp, // Kept for API compatibility, but not used for content blur
     shape: Shape = RoundedCornerShape(16.dp),
     alpha: Float = 0.4f,
-    borderAlpha: Float = 0.1f,
+    borderAlpha: Float = 0.15f,
     borderColor: Color = Color.White
 ): Modifier = this
     .clip(shape)
-    .then(
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            Modifier.graphicsLayer {
-                renderEffect = android.graphics.RenderEffect.createBlurEffect(
-                    radius.toPx(),
-                    radius.toPx(),
-                    android.graphics.Shader.TileMode.CLAMP
-                ).asComposeRenderEffect()
-            }
-        } else {
-            Modifier.blur(radius, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-        }
-    )
     .background(
         Color.White.copy(alpha = alpha)
     )
     .border(
         width = 1.dp,
-        color = borderColor.copy(alpha = borderAlpha),
+        brush = Brush.verticalGradient(
+            listOf(
+                borderColor.copy(alpha = borderAlpha * 2f),
+                borderColor.copy(alpha = borderAlpha)
+            )
+        ),
         shape = shape
     )
 
@@ -60,7 +54,7 @@ fun GlassmorphicContainer(
     shape: Shape = RoundedCornerShape(16.dp),
     containerColor: Color = MaterialTheme.colorScheme.surface,
     alpha: Float = 0.4f,
-    borderAlpha: Float = 0.1f,
+    borderAlpha: Float = 0.15f,
     borderColor: Color = Color.White,
     content: @Composable () -> Unit
 ) {
@@ -69,6 +63,7 @@ fun GlassmorphicContainer(
             .clip(shape)
     ) {
         // Blur Background Layer (Frosted Glass)
+        // We put this in a separate Box so it doesn't blur the 'content'
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -90,12 +85,19 @@ fun GlassmorphicContainer(
                 )
                 .border(
                     width = 1.dp,
-                    color = borderColor.copy(alpha = borderAlpha),
+                    brush = Brush.verticalGradient(
+                        listOf(
+                            borderColor.copy(alpha = borderAlpha * 2f),
+                            borderColor.copy(alpha = borderAlpha)
+                        )
+                    ),
                     shape = shape
                 )
         )
 
-        // Content Layer
-        content()
+        // Content Layer (STAYS CRISP)
+        Box(modifier = Modifier.fillMaxSize()) {
+            content()
+        }
     }
 }
