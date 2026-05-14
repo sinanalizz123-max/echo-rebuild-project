@@ -561,7 +561,43 @@ class MainActivity : ComponentActivity() {
                 val mediaMetadataState = playerConnectionSnapshot?.mediaMetadata?.collectAsState()
                 val mediaMetadata = mediaMetadataState?.value
 
-                BoxWithConstraints(
+                val BackgroundContent: @Composable () -> Unit = {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        // Glassmorphism Background Layer
+                        AsyncImage(
+                            model = mediaMetadata?.thumbnailUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .blur(100.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                                .alpha(if (useDarkTheme) 0.5f else 0.7f)
+                        )
+
+                        // Watermorphism Effect (Animated Water Drops)
+                        WaterBackground(isDark = useDarkTheme)
+
+                        // Overlay for contrast
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(
+                                            Color.Black.copy(alpha = if (useDarkTheme) 0.4f else 0.1f),
+                                            Color.Transparent,
+                                            Color.Black.copy(alpha = if (useDarkTheme) 0.6f else 0.2f)
+                                        )
+                                    )
+                                )
+                        )
+                    }
+                }
+
+                CompositionLocalProvider(
+                    LocalBackgroundContent provides BackgroundContent
+                ) {
+                    BoxWithConstraints(
                         modifier =
                         Modifier
                             .fillMaxSize()
@@ -569,35 +605,9 @@ class MainActivity : ComponentActivity() {
                                 MaterialTheme.colorScheme.background
                             )
                     ) {
-                    // Glassmorphism Background Layer
-                    AsyncImage(
-                        model = mediaMetadata?.thumbnailUrl,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .blur(100.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-                            .alpha(if (useDarkTheme) 0.5f else 0.7f)
-                    )
-
-                    // Watermorphism Effect (Animated Water Drops)
-                    WaterBackground(isDark = useDarkTheme)
-
-                    // Overlay for contrast
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Black.copy(alpha = if (useDarkTheme) 0.4f else 0.1f),
-                                        Color.Transparent,
-                                        Color.Black.copy(alpha = if (useDarkTheme) 0.6f else 0.2f)
-                                    )
-                                )
-                            )
-                    )
-                    val context = androidx.compose.ui.platform.LocalContext.current
+                        BackgroundContent()
+                        
+                        val context = androidx.compose.ui.platform.LocalContext.current
                     val focusManager = LocalFocusManager.current
                     val density = LocalDensity.current
                     val configuration = LocalConfiguration.current
@@ -1864,6 +1874,7 @@ class MainActivity : ComponentActivity() {
                             openSearchImmediately = false
                         }
                     }
+                    }
                 }
             }
         }
@@ -2019,3 +2030,4 @@ val LocalPlayerAwareWindowInsets =
     compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 val LocalDownloadUtil = staticCompositionLocalOf<DownloadUtil> { error("No DownloadUtil provided") }
 val LocalSyncUtils = staticCompositionLocalOf<SyncUtils> { error("No SyncUtils provided") }
+val LocalBackgroundContent = staticCompositionLocalOf<@Composable () -> Unit> { {} }

@@ -95,10 +95,6 @@ fun Modifier.glassmorphic(
         shape = shape
     )
 
-/**
- * A container that applies a physical lens effect (blur + saturation) to its background
- * while keeping the foreground content (icons, text) perfectly sharp.
- */
 @Composable
 fun GlassmorphicContainer(
     modifier: Modifier = Modifier,
@@ -109,13 +105,13 @@ fun GlassmorphicContainer(
     saturation: Float = 1.5f,
     content: @Composable () -> Unit
 ) {
+    val backgroundContent = LocalBackgroundContent.current
+
     Box(
         modifier = modifier.clip(shape)
     ) {
-        // LAYER 1: The Physical Lens (Background)
-        // This layer applies the blur and saturation to itself.
-        // To "blur" the background in Compose, we use a semi-transparent layer
-        // that enhances the already blurred background of the app.
+        // LAYER 1: The Distorted Background (Lens Input)
+        // We re-render the background content specifically for this lens area.
         Box(
             modifier = Modifier
                 .matchParentSize()
@@ -134,7 +130,6 @@ fun GlassmorphicContainer(
                                 android.graphics.ColorMatrixColorFilter(matrix)
                             )
                             
-                            // Chain the effects: Saturate then Blur (or vice versa)
                             renderEffect = RenderEffect.createChainEffect(
                                 saturationEffect,
                                 blurEffect
@@ -144,6 +139,14 @@ fun GlassmorphicContainer(
                         Modifier.blur(radius, edgeTreatment = BlurredEdgeTreatment.Unbounded)
                     }
                 )
+        ) {
+            backgroundContent()
+        }
+
+        // LAYER 2: Glass Tint and Border
+        Box(
+            modifier = Modifier
+                .matchParentSize()
                 .background(containerColor.copy(alpha = alpha))
                 .border(
                     width = 0.5.dp,
@@ -157,8 +160,7 @@ fun GlassmorphicContainer(
                 )
         )
 
-        // LAYER 2: The Content (Foreground)
-        // This layer remains perfectly sharp because it is NOT part of the graphicsLayer above.
+        // LAYER 3: Sharp Foreground Content
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
