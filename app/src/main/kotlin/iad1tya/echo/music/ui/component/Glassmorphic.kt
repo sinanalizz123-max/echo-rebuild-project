@@ -1,7 +1,7 @@
 package iad1tya.echo.music.ui.component
 
+import android.os.Build
 import android.graphics.RenderEffect
-import android.graphics.RuntimeShader
 import android.graphics.Shader
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
