@@ -50,7 +50,7 @@ fun WaterBackground(
             val randomY = remember { Random.nextFloat() }
             val duration = remember { Random.nextInt(15000, 30000) }
             val delay = remember { Random.nextInt(0, 5000) }
-            val size = remember { Random.nextInt(150, 400).dp }
+            val dropSize = remember { Random.nextInt(150, 400).dp }
 
             val xOffset by infiniteTransition.animateFloat(
                 initialValue = -50f,
@@ -80,7 +80,7 @@ fun WaterBackground(
             ) {
                 drawCircle(
                     color = dropColor.copy(alpha = 0.4f),
-                    radius = size.toPx(),
+                    radius = dropSize.toPx(),
                     center = Offset(
                         x = (randomX * size.width) + xOffset.dp.toPx(),
                         y = (randomY * size.height) + yOffset.dp.toPx()
