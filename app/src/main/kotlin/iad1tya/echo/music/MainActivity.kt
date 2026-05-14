@@ -81,7 +81,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
@@ -203,6 +203,7 @@ import iad1tya.echo.music.ui.component.BottomSheetPage
 import iad1tya.echo.music.ui.component.FloatingNavigationToolbar
 import iad1tya.echo.music.ui.component.IconButton
 import iad1tya.echo.music.ui.component.ImportantNoticeDialog
+import iad1tya.echo.music.ui.component.LocalBackgroundContent
 import iad1tya.echo.music.ui.component.LocalBottomSheetPageState
 import iad1tya.echo.music.ui.component.LocalMenuState
 import iad1tya.echo.music.ui.component.TopSearch
@@ -561,7 +562,8 @@ class MainActivity : ComponentActivity() {
                 val mediaMetadataState = playerConnectionSnapshot?.mediaMetadata?.collectAsState()
                 val mediaMetadata = mediaMetadataState?.value
 
-                val BackgroundContent: @Composable () -> Unit = {
+                @Composable
+                fun BackgroundContent() {
                     Box(modifier = Modifier.fillMaxSize()) {
                         // Glassmorphism Background Layer
                         AsyncImage(
@@ -595,7 +597,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 CompositionLocalProvider(
-                    LocalBackgroundContent provides BackgroundContent
+                    LocalBackgroundContent provides { BackgroundContent() }
                 ) {
                     BoxWithConstraints(
                         modifier =
@@ -2030,4 +2032,3 @@ val LocalPlayerAwareWindowInsets =
     compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 val LocalDownloadUtil = staticCompositionLocalOf<DownloadUtil> { error("No DownloadUtil provided") }
 val LocalSyncUtils = staticCompositionLocalOf<SyncUtils> { error("No SyncUtils provided") }
-val LocalBackgroundContent = staticCompositionLocalOf<@Composable () -> Unit> { {} }
