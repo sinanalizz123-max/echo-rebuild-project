@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
@@ -94,6 +95,10 @@ fun Modifier.glassmorphic(
         shape = shape
     )
 
+/**
+ * A container that applies a physical lens effect (blur + saturation) to its background
+ * while keeping the foreground content (icons, text) perfectly sharp.
+ */
 @Composable
 fun GlassmorphicContainer(
     modifier: Modifier = Modifier,
@@ -105,14 +110,60 @@ fun GlassmorphicContainer(
     content: @Composable () -> Unit
 ) {
     Box(
-        modifier = modifier
-            .lensModifier(
-                radius = radius.value * 2f, // Scaling for visual density
-                saturation = saturation,
-                alpha = alpha,
-                shape = shape
-            )
+        modifier = modifier.clip(shape)
     ) {
-        content()
+        // LAYER 1: The Physical Lens (Background)
+        // This layer applies the blur and saturation to itself.
+        // To "blur" the background in Compose, we use a semi-transparent layer
+        // that enhances the already blurred background of the app.
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .then(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        Modifier.graphicsLayer {
+                            val blurEffect = RenderEffect.createBlurEffect(
+                                radius.toPx(),
+                                radius.toPx(),
+                                Shader.TileMode.CLAMP
+                            )
+                            val matrix = android.graphics.ColorMatrix().apply {
+                                setSaturation(saturation)
+                            }
+                            val saturationEffect = RenderEffect.createColorFilterEffect(
+                                android.graphics.ColorMatrixColorFilter(matrix)
+                            )
+                            
+                            // Chain the effects: Saturate then Blur (or vice versa)
+                            renderEffect = RenderEffect.createChainEffect(
+                                saturationEffect,
+                                blurEffect
+                            ).asComposeRenderEffect()
+                        }
+                    } else {
+                        Modifier.blur(radius, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                    }
+                )
+                .background(containerColor.copy(alpha = alpha))
+                .border(
+                    width = 0.5.dp,
+                    brush = Brush.verticalGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.2f),
+                            Color.Transparent
+                        )
+                    ),
+                    shape = shape
+                )
+        )
+
+        // LAYER 2: The Content (Foreground)
+        // This layer remains perfectly sharp because it is NOT part of the graphicsLayer above.
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            content()
+        }
     }
 }
