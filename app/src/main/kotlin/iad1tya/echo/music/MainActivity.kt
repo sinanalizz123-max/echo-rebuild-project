@@ -99,6 +99,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.layout.ContentScale
@@ -187,6 +188,7 @@ import iad1tya.echo.music.constants.UseSystemFontKey
 import iad1tya.echo.music.db.MusicDatabase
 import iad1tya.echo.music.db.entities.SearchHistory
 import iad1tya.echo.music.extensions.toEnum
+import iad1tya.echo.music.models.MediaMetadata
 import iad1tya.echo.music.models.toMediaMetadata
 import iad1tya.echo.music.listentogether.ListenTogetherManager
 import iad1tya.echo.music.playback.DownloadUtil
@@ -555,7 +557,8 @@ class MainActivity : ComponentActivity() {
                 isDynamicColor = enableMaterialYou,
                 useSystemFont = useSystemFont,
             ) {
-                val mediaMetadata by playerConnectionSnapshot?.mediaMetadata?.collectAsState() ?: remember { mutableStateOf(null) }
+                val mediaMetadataState = playerConnectionSnapshot?.mediaMetadata?.collectAsState()
+                val mediaMetadata = mediaMetadataState?.value
 
                 BoxWithConstraints(
                         modifier =
