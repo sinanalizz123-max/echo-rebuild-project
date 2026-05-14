@@ -99,6 +99,9 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
@@ -552,14 +555,41 @@ class MainActivity : ComponentActivity() {
                 isDynamicColor = enableMaterialYou,
                 useSystemFont = useSystemFont,
             ) {
+                val mediaMetadata by playerConnectionSnapshot?.mediaMetadata?.collectAsState() ?: remember { mutableStateOf(null) }
+
                 BoxWithConstraints(
                         modifier =
                         Modifier
                             .fillMaxSize()
                             .background(
-                                MaterialTheme.colorScheme.surface
+                                MaterialTheme.colorScheme.background
                             )
                     ) {
+                    // Glassmorphism Background Layer
+                    AsyncImage(
+                        model = mediaMetadata?.thumbnailUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .blur(100.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                            .alpha(if (useDarkTheme) 0.5f else 0.7f)
+                    )
+
+                    // Overlay for contrast
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Black.copy(alpha = if (useDarkTheme) 0.4f else 0.1f),
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = if (useDarkTheme) 0.6f else 0.2f)
+                                    )
+                                )
+                            )
+                    )
                     val context = androidx.compose.ui.platform.LocalContext.current
                     val focusManager = LocalFocusManager.current
                     val density = LocalDensity.current
@@ -1026,6 +1056,7 @@ class MainActivity : ComponentActivity() {
                         LocalSyncUtils provides syncUtils,
                     ) {
                         Scaffold(
+                            containerColor = Color.Transparent,
                             topBar = {
                                 AnimatedVisibility(
                                     visible = shouldShowTopBar,

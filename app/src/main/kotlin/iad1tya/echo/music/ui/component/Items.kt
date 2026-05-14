@@ -97,6 +97,7 @@ import iad1tya.echo.music.LocalDatabase
 import iad1tya.echo.music.LocalDownloadUtil
 import iad1tya.echo.music.LocalPlayerConnection
 import iad1tya.echo.music.R
+import iad1tya.echo.music.ui.component.glassmorphic
 import iad1tya.echo.music.constants.HideExplicitKey
 import iad1tya.echo.music.constants.ListItemHeight
 import iad1tya.echo.music.constants.GridThumbnailHeight
@@ -142,6 +143,10 @@ inline fun ListItem(
         modifier = modifier
             .height(ListItemHeight)
             .padding(horizontal = 8.dp)
+            .then(
+                if (isActive) Modifier.glassmorphic(radius = 8.dp, alpha = 0.2f)
+                else Modifier
+            )
     ) {
         Box(Modifier.padding(6.dp), contentAlignment = Alignment.Center) { thumbnailContent() }
         Column(Modifier.weight(1f).padding(horizontal = 6.dp)) {

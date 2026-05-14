@@ -109,6 +109,7 @@ fun EchoTheme(
     themeColor: Color = DefaultThemeColor,
     isDynamicColor: Boolean = false,
     useSystemFont: Boolean = false,
+    isGlassmorphic: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -129,11 +130,24 @@ fun EchoTheme(
     }
 
     MaterialTheme(
-        colorScheme = colorScheme.pureBlack(pureBlack),
+        colorScheme = colorScheme.pureBlack(pureBlack).glass(isGlassmorphic),
         typography = if (useSystemFont) Typography() else AppTypography,
         content = content
     )
 }
+
+fun ColorScheme.glass(apply: Boolean) =
+    if (apply) copy(
+        surface = surface.copy(alpha = 0.45f),
+        background = Color.Transparent,
+        surfaceContainer = surfaceContainer.copy(alpha = 0.4f),
+        surfaceContainerLow = surfaceContainerLow.copy(alpha = 0.35f),
+        surfaceContainerHigh = surfaceContainerHigh.copy(alpha = 0.55f),
+        surfaceContainerHighest = surfaceContainerHighest.copy(alpha = 0.65f),
+        surfaceVariant = surfaceVariant.copy(alpha = 0.45f),
+        onSurface = onSurface,
+        onBackground = onBackground
+    ) else this
 
 fun Bitmap.extractThemeColor(): Color {
     val colorsToPopulation = Palette.from(this)
