@@ -57,9 +57,9 @@ fun FloatingNavigationToolbar(
             .fillMaxWidth(FloatingCompactWidthFraction)
             .widthIn(max = FloatingCompactMaxWidth),
         shape = RoundedCornerShape(28.dp),
-        radius = 24.dp,
-        alpha = if (pureBlack) 0.15f else 0.45f,
-        borderColor = if (pureBlack) Color.White else MaterialTheme.colorScheme.outline
+        radius = 30.dp,
+        alpha = 0.1f,
+        saturation = 1.5f
     ) {
         Row(
             modifier = Modifier

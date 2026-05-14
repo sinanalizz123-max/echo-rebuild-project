@@ -370,9 +370,10 @@ private fun NewMiniPlayer(
                 .then(miniPlayerContentModifier)
                 .height(64.dp) // Circular height
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) },
-            radius = 20.dp,
+            radius = 30.dp,
             shape = RoundedCornerShape(32.dp),
-            alpha = if (pureBlack || pureBlackMiniPlayer) 0.15f else 0.45f
+            alpha = 0.1f,
+            saturation = 1.5f
         ) {
             // Content Layer (Crisp)
             Row(
