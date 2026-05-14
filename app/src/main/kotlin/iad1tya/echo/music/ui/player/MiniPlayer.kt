@@ -89,6 +89,7 @@ import iad1tya.echo.music.extensions.togglePlayPause
 import iad1tya.echo.music.models.MediaMetadata
 import iad1tya.echo.music.utils.rememberPreference
 import iad1tya.echo.music.ui.theme.PlayerColorExtractor
+import iad1tya.echo.music.ui.component.glassmorphic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -368,26 +369,12 @@ private fun NewMiniPlayer(
                 .then(miniPlayerContentModifier)
                 .height(64.dp) // Circular height
                 .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) }
-                .clip(RoundedCornerShape(32.dp))
+                .glassmorphic(
+                    radius = 20.dp,
+                    shape = RoundedCornerShape(32.dp),
+                    alpha = if (pureBlack || pureBlackMiniPlayer) 0.15f else 0.45f
+                )
         ) {
-            // Background Blur Layer (Frosted Glass)
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .blur(20.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-                    .then(backgroundModifier)
-                    .border(
-                        width = 1.dp,
-                        brush = Brush.verticalGradient(
-                            listOf(
-                                Color.White.copy(alpha = 0.4f),
-                                Color.White.copy(alpha = 0.1f)
-                            )
-                        ),
-                        shape = RoundedCornerShape(32.dp)
-                    )
-            )
-
             // Content Layer (Crisp)
             Row(
                 verticalAlignment = Alignment.CenterVertically,

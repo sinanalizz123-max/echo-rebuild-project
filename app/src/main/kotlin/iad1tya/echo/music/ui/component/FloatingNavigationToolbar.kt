@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import iad1tya.echo.music.constants.FloatingCompactMaxWidth
 import iad1tya.echo.music.constants.FloatingCompactWidthFraction
+import iad1tya.echo.music.ui.component.glassmorphic
 import iad1tya.echo.music.ui.screens.Screens
 
 @Composable
@@ -53,14 +54,14 @@ fun FloatingNavigationToolbar(
     Surface(
         modifier = modifier
             .fillMaxWidth(FloatingCompactWidthFraction)
-            .widthIn(max = FloatingCompactMaxWidth),
+            .widthIn(max = FloatingCompactMaxWidth)
+            .glassmorphic(
+                radius = 24.dp,
+                shape = RoundedCornerShape(28.dp),
+                alpha = if (pureBlack) 0.15f else 0.45f
+            ),
         shape = RoundedCornerShape(28.dp),
-        color =
-            if (pureBlack) {
-                Color(0xFF0B0B0B)
-            } else {
-                MaterialTheme.colorScheme.surface.copy(alpha = 0.94f)
-            },
+        color = Color.Transparent,
         border = BorderStroke(
             width = 1.dp,
             color =
@@ -70,7 +71,7 @@ fun FloatingNavigationToolbar(
                     MaterialTheme.colorScheme.outline.copy(alpha = 0.45f)
                 },
         ),
-        tonalElevation = 10.dp,
+        tonalElevation = 0.dp,
         shadowElevation = 18.dp,
     ) {
         Row(
