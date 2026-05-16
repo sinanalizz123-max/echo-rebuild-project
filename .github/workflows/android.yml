@@ -38,14 +38,14 @@ jobs:
     - name: Build with Gradle
       run: |
         set -o pipefail
-        ./gradlew assembleUniversalDebug | tee build.log
+        ./gradlew :app:assembleMobileUniversalDebug | tee build.log
 
     - name: Upload APK
       if: success()
       uses: actions/upload-artifact@v4
       with:
         name: echo-music-debug.apk
-        path: app/build/outputs/apk/universal/debug/*.apk
+        path: app/build/outputs/apk/mobileUniversal/debug/*.apk
 
     - name: Upload Build Log on Failure
       if: failure()
