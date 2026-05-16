@@ -1939,6 +1939,7 @@ class MainActivity : ComponentActivity() {
             } // end CompositionLocalProvider (glass tint)
         }
     }
+    }
 
     private fun handleIntent(intent: Intent?, navController: NavHostController) {
         if (intent == null) return
