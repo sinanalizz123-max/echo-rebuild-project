@@ -58,6 +58,10 @@ import androidx.compose.ui.unit.dp
 import iad1tya.echo.music.LocalAnimationsDisabled
 import iad1tya.echo.music.constants.BottomSheetAnimationSpec
 import iad1tya.echo.music.constants.BottomSheetSoftAnimationSpec
+import iad1tya.echo.music.ui.theme.LiquidGlassTokens
+import iad1tya.echo.music.ui.theme.LocalGlassTint
+import iad1tya.echo.music.ui.theme.LocalGlassOnDark
+import iad1tya.echo.music.ui.theme.liquidGlassSheetColor
 import iad1tya.echo.music.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -94,9 +98,14 @@ fun BottomSheet(
                     topEnd = if (!state.isExpanded) 16.dp else 0.dp,
                 ),
             ).background(
-                backgroundColor.copy(
-                    alpha = backgroundColor.alpha * state.progress.coerceIn(0f, 1f)
-                )
+                liquidGlassSheetColor(
+                    progress = state.progress.coerceIn(0f, 1f),
+                    tint     = LocalGlassTint.current,
+                    darkBase = LocalGlassOnDark.current,
+                ).let { glassColor ->
+                    // When fully expanded, fall back to the opaque backgroundColor
+                    if (state.isExpanded) backgroundColor else glassColor
+                }
             ),
     ) {
         if (!state.isCollapsed && !state.isDismissed) {

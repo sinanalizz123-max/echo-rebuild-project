@@ -65,7 +65,6 @@ fun EchoMusicTheme(
     seedPalette: ThemeSeedPalette? = null,
     disableAnimations: Boolean = false,
     useSystemFont: Boolean = false,
-    isGlassmorphic: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -116,25 +115,12 @@ fun EchoMusicTheme(
     }
 
     MaterialExpressiveTheme(
-        colorScheme = animatedColorScheme.glass(isGlassmorphic),
+        colorScheme = animatedColorScheme,
         typography = typography,
         shapes = expressiveShapes,
         content = content
     )
 }
-
-fun ColorScheme.glass(apply: Boolean) =
-    if (apply) copy(
-        surface = surface.copy(alpha = 0.45f),
-        background = Color.Transparent,
-        surfaceContainer = surfaceContainer.copy(alpha = 0.4f),
-        surfaceContainerLow = surfaceContainerLow.copy(alpha = 0.35f),
-        surfaceContainerHigh = surfaceContainerHigh.copy(alpha = 0.55f),
-        surfaceContainerHighest = surfaceContainerHighest.copy(alpha = 0.65f),
-        surfaceVariant = surfaceVariant.copy(alpha = 0.45f),
-        onSurface = onSurface,
-        onBackground = onBackground
-    ) else this
 
 @Composable
 private fun animateColorScheme(targetColorScheme: ColorScheme): ColorScheme {

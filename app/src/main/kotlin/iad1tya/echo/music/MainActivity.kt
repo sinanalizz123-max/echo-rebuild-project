@@ -110,12 +110,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.layout.ContentScale
-import iad1tya.echo.music.ui.component.LocalBackgroundContent
-import iad1tya.echo.music.ui.component.WaterBackground
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
@@ -747,52 +741,20 @@ class MainActivity : ComponentActivity() {
                 disableAnimations = disableAnimations,
                 useSystemFont = useSystemFont,
             ) {
-                val mediaMetadataState = playerConnection?.mediaMetadata?.collectAsState()
-                val mediaMetadata = mediaMetadataState?.value
-
+                // Provide liquid glass tint (album-art colour) and dark-context flag
+                // to the entire composition so BottomSheet, MiniPlayer, etc. pick it up.
                 CompositionLocalProvider(
-                    LocalBackgroundContent provides @Composable { 
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            // Glassmorphism Background Layer
-                            coil3.compose.AsyncImage(
-                                model = mediaMetadata?.thumbnailUrl,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .blur(100.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-                                    .alpha(if (useDarkTheme) 0.5f else 0.7f)
-                            )
-
-                            // Watermorphism Effect (Animated Water Drops)
-                            WaterBackground(isDark = useDarkTheme)
-
-                            // Overlay for contrast
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(
-                                        Brush.verticalGradient(
-                                            colors = listOf(
-                                                Color.Black.copy(alpha = if (useDarkTheme) 0.4f else 0.1f),
-                                                Color.Transparent,
-                                                Color.Black.copy(alpha = if (useDarkTheme) 0.6f else 0.2f)
-                                            )
-                                        )
-                                    )
-                            )
-                        }
-                    }
+                    iad1tya.echo.music.ui.theme.LocalGlassTint provides iad1tya.echo.music.ui.theme.toGlassTint(themeColor),
+                    iad1tya.echo.music.ui.theme.LocalGlassOnDark provides useDarkTheme,
                 ) {
                     BoxWithConstraints(
                         modifier =
                         Modifier
                             .fillMaxSize()
                             .background(
-                                MaterialTheme.colorScheme.background
+                                if(pureBlack) Color.Black else MaterialTheme.colorScheme.surface
                             )
                     ) {
-                        LocalBackgroundContent.current()
                     val focusManager = LocalFocusManager.current
                     val density = LocalDensity.current
                     val windowsInsets = WindowInsets.systemBars
@@ -1974,7 +1936,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
-            }
+            } // end CompositionLocalProvider (glass tint)
         }
     }
 

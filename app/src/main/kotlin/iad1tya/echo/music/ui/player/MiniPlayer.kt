@@ -27,6 +27,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import iad1tya.echo.music.LocalPlayerConnection
 import iad1tya.echo.music.constants.SwipeSensitivityKey
+import iad1tya.echo.music.ui.theme.LiquidGlassTokens
+import iad1tya.echo.music.ui.theme.LocalGlassTint
+import iad1tya.echo.music.ui.theme.liquidGlass
 import iad1tya.echo.music.utils.rememberPreference
 import kotlin.math.roundToInt
 
@@ -68,14 +71,17 @@ private fun NewMiniPlayer(
         pureBlack = pureBlack,
         useLegacyBackground = false
     ) { offsetX ->
+        val glassTint = LocalGlassTint.current
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp)
                 .offset { IntOffset(offsetX.roundToInt(), 0) }
-                .clip(RoundedCornerShape(32.dp))
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceContainer
+                .liquidGlass(
+                    shape      = LiquidGlassTokens.ShapePill,
+                    tintColor  = glassTint,
+                    blurRadius = LiquidGlassTokens.BlurRadiusDefault,
+                    onDark     = true,
                 )
         ) {
             NewMiniPlayerContent(

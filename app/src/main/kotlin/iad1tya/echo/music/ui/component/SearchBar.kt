@@ -88,8 +88,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.util.lerp
 import iad1tya.echo.music.constants.AppBarHeight
-import iad1tya.echo.music.ui.component.GlassmorphicContainer
-import iad1tya.echo.music.ui.component.glassmorphic
 import kotlin.math.max
 
 @ExperimentalMaterial3Api
@@ -184,7 +182,18 @@ fun TopSearch(
             ).toDp()
         }
 
-        GlassmorphicContainer(
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(topInset + AppBarHeight)
+                .background(color = MaterialTheme.colorScheme.surface)
+        )
+
+        Surface(
+            shape = animatedShape,
+            color = colors.containerColor,
+            contentColor = contentColorFor(colors.containerColor),
+            tonalElevation = tonalElevation,
             modifier = Modifier
                 .padding(
                     top = animatedSurfaceTopPadding,
@@ -192,10 +201,6 @@ fun TopSearch(
                     end = endPadding,
                 )
                 .size(width = width, height = height),
-            radius = 30.dp,
-            shape = animatedShape,
-            alpha = if (animationProgress > 0.5f) 0.15f else 0.1f,
-            saturation = 1.6f
         ) {
             Column {
                 SearchBarInputField(

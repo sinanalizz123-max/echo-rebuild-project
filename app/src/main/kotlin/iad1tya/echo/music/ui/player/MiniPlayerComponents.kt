@@ -79,12 +79,14 @@ import kotlinx.coroutines.launch
 import iad1tya.echo.music.R
 import iad1tya.echo.music.constants.MiniPlayerHeight
 import iad1tya.echo.music.extensions.togglePlayPause
+import iad1tya.echo.music.ui.theme.LiquidGlassTokens
+import iad1tya.echo.music.ui.theme.LocalGlassTint
+import iad1tya.echo.music.ui.theme.liquidGlass
+import iad1tya.echo.music.ui.theme.miniPlayerGlassBrush
 
 import iad1tya.echo.music.models.MediaMetadata
 import iad1tya.echo.music.playback.PlayerConnection
 import iad1tya.echo.music.together.TogetherSessionState
-import iad1tya.echo.music.ui.component.GlassmorphicContainer
-import iad1tya.echo.music.ui.component.glassmorphic
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import androidx.compose.foundation.layout.Arrangement
@@ -122,6 +124,16 @@ fun SwipeableMiniPlayerBox(
             .height(MiniPlayerHeight)
             .padding(horizontal = 8.dp)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+            .let { baseModifier ->
+                if (useLegacyBackground) {
+                    baseModifier.background(
+                        if (pureBlack) Color.Black
+                        else MaterialTheme.colorScheme.surfaceContainer
+                    )
+                } else {
+                    baseModifier.padding(horizontal = 12.dp)
+                }
+            }
             .let { baseModifier ->
                 if (swipeThumbnail) {
                     baseModifier.pointerInput(Unit) {
@@ -197,37 +209,25 @@ fun SwipeableMiniPlayerBox(
                 }
             }
     ) {
-        GlassmorphicContainer(
-            modifier = Modifier
-                .fillMaxSize()
-                .offset { IntOffset(offsetXAnimatable.value.roundToInt(), 0) },
-            radius = 30.dp,
-            shape = RoundedCornerShape(24.dp),
-            alpha = if (pureBlack) 0.15f else 0.1f,
-            saturation = 1.6f
-        ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                content(offsetXAnimatable.value)
+        content(offsetXAnimatable.value)
 
-                // Visual indicator
-                if (offsetXAnimatable.value.absoluteValue > 50f) {
-                    Box(
-                        modifier = Modifier
-                            .align(if (offsetXAnimatable.value > 0) Alignment.CenterStart else Alignment.CenterEnd)
-                            .padding(horizontal = 16.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                if (offsetXAnimatable.value > 0) R.drawable.skip_previous else R.drawable.skip_next
-                            ),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary.copy(
-                                alpha = (offsetXAnimatable.value.absoluteValue / autoSwipeThreshold).coerceIn(0f, 1f)
-                            ),
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
+        // Visual indicator
+        if (offsetXAnimatable.value.absoluteValue > 50f) {
+            Box(
+                modifier = Modifier
+                    .align(if (offsetXAnimatable.value > 0) Alignment.CenterStart else Alignment.CenterEnd)
+                    .padding(horizontal = 16.dp)
+            ) {
+                Icon(
+                    painter = painterResource(
+                        if (offsetXAnimatable.value > 0) R.drawable.skip_previous else R.drawable.skip_next
+                    ),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary.copy(
+                        alpha = (offsetXAnimatable.value.absoluteValue / autoSwipeThreshold).coerceIn(0f, 1f)
+                    ),
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }
